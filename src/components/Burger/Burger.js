@@ -15,12 +15,25 @@ const burger = ( props ) => {
     //    Por ejemplo cheese: 2 se transformará en ["cheese", "cheese"]
     // 3. Interno al map se ejecutará otro map sobre el índice de los elementos, y
     //    devolveremos el jsx BurgerIngredient
-    const transformedIngredients = Object.keys(props.ingredients)
+    // 4. Para saber si es un array vacío:
+    //    Sobre el resultado final se aplica reduce, que permite transformar un 
+    //    array en otra cosa. Toma como entrada una función con dos parámetros,
+    //    el valor previo y el valor actual. También acepta un valor inicial, 
+    //    que en este caso será un array vacio.
+    //    Por ejemplo cheese: 2 se transformará en (2) [{...}, {...}] de props: {type cheese}
+    let transformedIngredients = Object.keys(props.ingredients)
         .map(igKey => {
             return [...Array(props.ingredients[igKey])].map((_, i) => {
                 return <BurgerIngredient key={igKey + i} type={igKey} />
             });
-        });
+        })
+        .reduce((arr, el) => {
+            return arr.concat(el)
+        }, []);
+    
+    if (transformedIngredients.length === 0) {   
+        transformedIngredients = <p>Please start adding ingredients</p>;
+    }
 
     return (
         <div className={classes.Burger}>
